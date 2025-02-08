@@ -13,17 +13,9 @@ const HomePage = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" height="100vh" p={2} gap={2}>
-      <Box flex={selectedNode ? 2 : 1} component={Paper} p={2} overflow="auto">
+      <Box  p={2} overflow="auto" bgcolor={"grey"}>
         <FlowComponent onNodeClick={handleNodeClick} />
       </Box>
-
-      {selectedNode && (
-        <Box flex={1} component={Paper} p={2} overflow="auto">
-          <NodeDetails node={selectedNode} />
-        </Box>
-      )}
-    </Box>
   );
 };
 
