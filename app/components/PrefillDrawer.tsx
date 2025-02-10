@@ -5,6 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import React from 'react';
 import { Node, Edge } from 'react-flow-renderer';
 import { prefillConfig } from './prefillConfig';
+import { findUpstreamNodes } from '@/utils/findUpstreamNodes';
 
 
 interface PrefillDrawerProps {
@@ -26,31 +27,7 @@ const PrefillDrawer: React.FC<PrefillDrawerProps> = ({
     edges,
     onSelectPrefill,
 }) => {
-    // Function to find all upstream nodes
-    const findUpstreamNodes = (currentNode: Node, nodes: Node[], edges: Edge[]): Node[] => {
-        const upstreamNodes: Node[] = [];
-        const visited = new Set<string>();
-
-        const traverse = (nodeId: string) => {
-            if (visited.has(nodeId)) return;
-            visited.add(nodeId);
-
-            // Find edges where the current node is the target
-            edges.forEach((edge) => {
-                if (edge.target === nodeId) {
-                    const upstreamNode = nodes.find((n) => n.id === edge.source);
-                    if (upstreamNode && !upstreamNodes.some((n) => n.id === upstreamNode.id)) {
-                        upstreamNodes.push(upstreamNode);
-                        traverse(upstreamNode.id); // Recursively traverse further upstream
-                    }
-                }
-            });
-        };
-
-        traverse(currentNode.id);
-        return upstreamNodes;
-    };
-
+   
     const upstreamNodes = findUpstreamNodes(node, nodes, edges);
 
     return (
