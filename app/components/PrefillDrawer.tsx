@@ -4,6 +4,8 @@ import { Drawer, Box, Typography, Accordion, AccordionSummary, AccordionDetails,
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import React from 'react';
 import { Node, Edge } from 'react-flow-renderer';
+import { prefillConfig } from './prefillConfig';
+
 
 interface PrefillDrawerProps {
     isOpen: boolean;
@@ -51,19 +53,6 @@ const PrefillDrawer: React.FC<PrefillDrawerProps> = ({
 
     const upstreamNodes = findUpstreamNodes(node, nodes, edges);
 
-    // Dummy data for "Action Properties"
-    const actionProperties = {
-        "action_id": "Action ID",
-        "action_name": "Action Name",
-        "action_status": "Action Status",
-    };
-    // Dummy data for "Client Organization Properties"
-    const clientOrganizationProperties = {
-        "org_id": "Organization ID",
-        "org_name": "Organization Name",
-        "org_address": "Organization Address",
-    };
-
     return (
         <Drawer
             anchor="left"
@@ -83,47 +72,29 @@ const PrefillDrawer: React.FC<PrefillDrawerProps> = ({
                     for {node.data.label}'s {field}
                 </FormHelperText>
             </Box>
-            <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography>Action Properties</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {Object.entries(actionProperties).map(([key, label]) => (
-                        <Box
-                            key={`action-property-${key}`}
-                            sx={{
-                                p: 1,
-                                cursor: 'pointer',
-                                '&:hover': { backgroundColor: '#f5f5f5' },
-                            }}
-                            onClick={() => onSelectPrefill(`Action Properties.${label}`)}
-                        >
-                            <Typography>{label}</Typography>
-                        </Box>
-                    ))}
-                </AccordionDetails>
-            </Accordion>
 
-            <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography>Client Organization Properties</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {Object.entries(clientOrganizationProperties).map(([key, label]) => (
-                        <Box
-                            key={`client-org-property-${key}`}
-                            sx={{
-                                p: 1,
-                                cursor: 'pointer',
-                                '&:hover': { backgroundColor: '#f5f5f5' },
-                            }}
-                            onClick={() => onSelectPrefill(`Client Organization Properties.${label}`)}
-                        >
-                            <Typography>{label}</Typography>
-                        </Box>
-                    ))}
-                </AccordionDetails>
-            </Accordion>
+            {Object.entries(prefillConfig).map(([key, config]) => (
+                <Accordion key={key}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography>{config.label}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {Object.entries(config.fields).map(([fieldKey, fieldLabel]) => (
+                            <Box
+                                key={`${key}-${fieldKey}`}
+                                sx={{
+                                    p: 1,
+                                    cursor: 'pointer',
+                                    '&:hover': { backgroundColor: '#f5f5f5' },
+                                }}
+                                onClick={() => onSelectPrefill(`${config.label}.${fieldLabel}`)}
+                            >
+                                <Typography>{fieldLabel}</Typography>
+                            </Box>
+                        ))}
+                    </AccordionDetails>
+                </Accordion>
+            ))}
 
             {upstreamNodes.length > 0 ? (
                 upstreamNodes.map((upstreamNode) => (
